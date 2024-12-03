@@ -1,34 +1,29 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    private final List<Subtask> subtasks = new ArrayList<>();
+    private final List<Integer> subtaskIds = new ArrayList<>();
 
     public Epic(String name, String description, TaskStatus status) {
         super(name, description, status);
     }
 
-    public List<Subtask> getSubtasks() {
-        return subtasks;
+    public List<Integer> getSubtaskIds() {
+        return subtaskIds;
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.add(subtask);
-        super.setStatus(getStatusBySubtasks());
+    public void addSubtaskId(Integer id) {
+        subtaskIds.add(id);
     }
 
-    public void updateSubtask(Subtask subtask) {
-        if (subtasks.remove(subtask)) {
-            subtasks.add(subtask);
-            super.setStatus(getStatusBySubtasks());
-        }
+    public void removeSubtaskId(Integer id) {
+        subtaskIds.remove(id);
     }
 
-    public void removeSubtask(Subtask subtask) {
-        subtasks.remove(subtask);
-        super.setStatus(getStatusBySubtasks());
+    public void calculateAndSetStatus(List<Subtask> subtasks) {
+        super.setStatus(getStatusBySubtasks(subtasks));
     }
 
     @Override
@@ -36,7 +31,7 @@ public class Epic extends Task {
         System.out.println("У эпика нельзя поменять статус");
     }
 
-    private TaskStatus getStatusBySubtasks() {
+    private TaskStatus getStatusBySubtasks(List<Subtask> subtasks) {
         if (subtasks.isEmpty()) {
             return TaskStatus.NEW;
         }

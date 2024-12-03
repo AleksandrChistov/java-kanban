@@ -1,6 +1,6 @@
 package ru.yandex.practicum.test;
 
-import ru.yandex.practicum.*;
+import ru.yandex.practicum.task.*;
 
 public class Main {
 
