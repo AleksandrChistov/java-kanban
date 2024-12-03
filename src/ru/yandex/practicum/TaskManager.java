@@ -3,9 +3,9 @@ package ru.yandex.practicum;
 import java.util.*;
 
 public class TaskManager {
-    private Map<Integer, Task> tasksMap = new HashMap<>();
-    private Map<Integer, Epic> epicsMap = new HashMap<>();
-    private Map<Integer, Subtask> subtasksMap = new HashMap<>();
+    private final Map<Integer, Task> tasksMap = new HashMap<>();
+    private final Map<Integer, Epic> epicsMap = new HashMap<>();
+    private final Map<Integer, Subtask> subtasksMap = new HashMap<>();
     private int lastTaskId = 0;
 
     public static void main(String[] args) {
