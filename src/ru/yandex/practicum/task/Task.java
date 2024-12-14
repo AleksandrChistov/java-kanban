@@ -1,5 +1,7 @@
 package ru.yandex.practicum.task;
 
+import ru.yandex.practicum.task.enums.TaskStatus;
+
 public class Task {
     private int id;
     private String name;

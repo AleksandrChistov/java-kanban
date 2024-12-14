@@ -1,6 +1,7 @@
 package ru.yandex.practicum.test;
 
 import ru.yandex.practicum.task.*;
+import ru.yandex.practicum.task.enums.TaskStatus;
 import ru.yandex.practicum.task.interfaces.TaskManager;
 
 public class Main {

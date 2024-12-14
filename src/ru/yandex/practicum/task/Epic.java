@@ -1,5 +1,7 @@
 package ru.yandex.practicum.task;
 
+import ru.yandex.practicum.task.enums.TaskStatus;
+
 import java.util.ArrayList;
 import java.util.List;
 
