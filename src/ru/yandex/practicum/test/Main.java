@@ -1,11 +1,12 @@
 package ru.yandex.practicum.test;
 
 import ru.yandex.practicum.task.*;
+import ru.yandex.practicum.task.interfaces.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         Task task1 = new Task("Task 1", "Description for Task 1", TaskStatus.NEW);
         Task task2 = new Task("Task 2", "Description for Task 2", TaskStatus.NEW);
