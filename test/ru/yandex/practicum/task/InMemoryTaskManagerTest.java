@@ -3,6 +3,7 @@ package ru.yandex.practicum.task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.task.enums.TaskStatus;
+import ru.yandex.practicum.task.managers.InMemoryTaskManager;
 import ru.yandex.practicum.task.tasks.Epic;
 import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
