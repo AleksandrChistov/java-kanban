@@ -1,8 +1,8 @@
 package ru.yandex.practicum.task.interfaces;
 
-import ru.yandex.practicum.task.Epic;
-import ru.yandex.practicum.task.Subtask;
-import ru.yandex.practicum.task.Task;
+import ru.yandex.practicum.task.tasks.Epic;
+import ru.yandex.practicum.task.tasks.Subtask;
+import ru.yandex.practicum.task.tasks.Task;
 
 import java.util.List;
 

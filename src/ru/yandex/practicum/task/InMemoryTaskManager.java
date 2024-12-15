@@ -2,6 +2,9 @@ package ru.yandex.practicum.task;
 
 import ru.yandex.practicum.task.interfaces.HistoryManager;
 import ru.yandex.practicum.task.interfaces.TaskManager;
+import ru.yandex.practicum.task.tasks.Epic;
+import ru.yandex.practicum.task.tasks.Subtask;
+import ru.yandex.practicum.task.tasks.Task;
 
 import java.util.*;
 

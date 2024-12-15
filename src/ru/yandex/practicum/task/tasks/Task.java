@@ -1,4 +1,4 @@
-package ru.yandex.practicum.task;
+package ru.yandex.practicum.task.tasks;
 
 import ru.yandex.practicum.task.enums.TaskStatus;
 
