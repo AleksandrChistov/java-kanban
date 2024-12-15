@@ -15,24 +15,35 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task createTask(Task task) {
         task.setId(++lastTaskId);
-        tasksMap.put(task.getId(), task);
+
+        Task newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
+        newTask.setId(task.getId());
+        tasksMap.put(newTask.getId(), newTask);
+
         return task;
     }
 
     @Override
     public Epic createEpic(Epic epic) {
         epic.setId(++lastTaskId);
-        epicsMap.put(epic.getId(), epic);
+
+        Epic newEpic = new Epic(epic.getName(), epic.getDescription(), epic.getStatus());
+        newEpic.setId(epic.getId());
+        epicsMap.put(newEpic.getId(), newEpic);
+
         return epic;
     }
 
     @Override
     public Subtask createSubtask(Subtask subtask) {
         subtask.setId(++lastTaskId);
-        subtasksMap.put(subtask.getId(), subtask);
+
+        Subtask newSubtask = new Subtask(subtask.getName(), subtask.getDescription(), subtask.getStatus(), subtask.getEpicId());
+        newSubtask.setId(subtask.getId());
+        subtasksMap.put(newSubtask.getId(), newSubtask);
 
         Epic epic = epicsMap.get(subtask.getEpicId());
-        epic.addSubtaskId(subtask.getId());
+        epic.addSubtaskId(newSubtask.getId());
 
         List<Subtask> subtasksOfEpic = getSubtasksByEpic(epic);
         epic.calculateAndSetStatus(subtasksOfEpic);
@@ -120,12 +131,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task deleteTaskById(int id) {
+    public Task deleteTask(int id) {
         return tasksMap.remove(id);
     }
 
     @Override
-    public Epic deleteEpicById(int id) {
+    public Epic deleteEpic(int id) {
         Epic removedEpic = epicsMap.remove(id);
         if (removedEpic != null) {
             for (Integer subtaskId : removedEpic.getSubtaskIds()) {
@@ -136,7 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask deleteSubtaskById(int id) {
+    public Subtask deleteSubtask(int id) {
         Subtask removedSubtask = subtasksMap.remove(id);
         if (removedSubtask != null) {
             Epic epic = epicsMap.get(removedSubtask.getEpicId());

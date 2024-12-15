@@ -37,11 +37,11 @@ public interface TaskManager {
 
     void deleteAllSubtasks();
 
-    Task deleteTaskById(int id);
+    Task deleteTask(int id);
 
-    Epic deleteEpicById(int id);
+    Epic deleteEpic(int id);
 
-    Subtask deleteSubtaskById(int id);
+    Subtask deleteSubtask(int id);
 
     List<Task> getHistory();
 }
