@@ -298,5 +298,6 @@ class InMemoryTaskManagerTest {
         taskManager.deleteSubtask(subtask.getId());
 
         assertTrue(taskManager.getAllSubtasks().isEmpty(), "Подзадача не была удалена");
+        assertTrue(epic.getSubtaskIds().isEmpty(), "ID подзадачи внутри эпика не был удален");
     }
 }
