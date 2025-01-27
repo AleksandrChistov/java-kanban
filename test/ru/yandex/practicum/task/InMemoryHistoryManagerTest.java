@@ -36,6 +36,23 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    void repeatedAdd() {
+        Task task = new Task("Task", "Some task", TaskStatus.NEW);
+        task.setId(1);
+
+        historyManager.add(task);
+
+        assertEquals("Task", historyManager.getHistory().getFirst().getName(), "Имя добавленной задачи отличается от ожидаемого");
+
+        Task taskNewName = new Task("Task new", "Some task", TaskStatus.NEW);
+        taskNewName.setId(1);
+
+        historyManager.add(taskNewName);
+
+        assertEquals("Task new", historyManager.getHistory().getFirst().getName(), "Имя обновленной задачи отличается от ожидаемого");
+    }
+
+    @Test
     void remove() {
         Task task = new Task("Task", "Some task", TaskStatus.NEW);
 
