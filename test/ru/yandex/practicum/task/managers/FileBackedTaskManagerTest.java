@@ -47,7 +47,7 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
     }
 
     @Test
-    void saveAndLoadTasksFile() {
+    void saveAndLoadTasksFromFile() {
         createAllTasks();
 
         FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
@@ -58,10 +58,12 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
     }
 
     @Test
-    void clearTasksFile() {
+    void deleteAllTasksInFile() {
         createAllTasks();
 
-        ((FileBackedTaskManager) taskManager).clear();
+        taskManager.deleteAllTasks();
+        taskManager.deleteAllEpics();
+        taskManager.deleteAllSubtasks();
 
         FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
 

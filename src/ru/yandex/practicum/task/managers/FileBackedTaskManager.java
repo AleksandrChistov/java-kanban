@@ -69,19 +69,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void deleteAllTasks() {
         super.deleteAllTasks();
-        clear();
+        save();
     }
 
     @Override
     public void deleteAllEpics() {
         super.deleteAllEpics();
-        clear();
+        save();
     }
 
     @Override
     public void deleteAllSubtasks() {
         super.deleteAllSubtasks();
-        clear();
+        save();
     }
 
     @Override
@@ -109,10 +109,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         try {
             String content = Files.readString(file.toPath());
+
+            if (content.isBlank()) {
+                return manager;
+            }
+
             String[] lines = content.split("\n");
 
             for (String line : lines) {
-                if (line.startsWith("id") || line.isBlank()) {
+                if (line.startsWith("id")) {
                     continue;
                 }
                 Task task = fromString(line);
@@ -150,7 +155,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             sortedTaskMap.putAll(epicsMap);
             sortedTaskMap.putAll(subtasksMap);
 
-            if (!sortedTaskMap.isEmpty()) {
+            if (sortedTaskMap.isEmpty()) {
+                bw.write("");
+            } else {
                 String header = "id,type,name,status,description,epic\n";
                 bw.write(header);
             }
@@ -160,14 +167,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения задачи в файл");
-        }
-    }
-
-    protected void clear() {
-        try {
-            Files.writeString(file.toPath(), "");
-        } catch (IOException e) {
-            System.out.println("Ошибка очистки файла с задачами");
         }
     }
 
