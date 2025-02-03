@@ -1,9 +1,8 @@
-package ru.yandex.practicum.task;
+package ru.yandex.practicum.task.managers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.task.enums.TaskStatus;
-import ru.yandex.practicum.task.managers.InMemoryTaskManager;
+import ru.yandex.practicum.task.interfaces.TaskManager;
 import ru.yandex.practicum.task.tasks.Epic;
 import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
@@ -12,13 +11,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
-    InMemoryTaskManager taskManager;
-
-    @BeforeEach
-    void beforeEach() {
-        taskManager = new InMemoryTaskManager();
-    }
+abstract class AbstractTaskManagerTest {
+    protected TaskManager taskManager;
 
     @Test
     void createTask() {
