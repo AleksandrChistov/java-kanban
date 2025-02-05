@@ -1,6 +1,7 @@
 package ru.yandex.practicum.task.tasks;
 
 import ru.yandex.practicum.task.enums.TaskStatus;
+import ru.yandex.practicum.task.enums.TaskType;
 
 public class Task {
     private int id;
@@ -62,12 +63,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+        return String.format("%d,%s,%s,%s,%s", getId(), TaskType.TASK, getName(), getStatus(), getDescription());
     }
 
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    File file;
+    private final File file;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -163,20 +163,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
             for (Task task : sortedTaskMap.values()) {
-                bw.write(toString(task) + "\n");
+                bw.write(task + "\n");
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения задачи в файл");
-        }
-    }
-
-    private String toString(Task task) {
-        if (task instanceof Epic) {
-            return String.format("%d,%s,%s,%s,%s", task.getId(), TaskType.EPIC, task.getName(), task.getStatus(), task.getDescription());
-        } else if (task instanceof Subtask) {
-            return String.format("%d,%s,%s,%s,%s,%d", task.getId(), TaskType.SUBTASK, task.getName(), task.getStatus(), task.getDescription(), ((Subtask) task).getEpicId());
-        } else {
-            return String.format("%d,%s,%s,%s,%s", task.getId(), TaskType.TASK, task.getName(), task.getStatus(), task.getDescription());
         }
     }
 

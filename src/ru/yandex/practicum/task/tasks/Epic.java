@@ -1,6 +1,7 @@
 package ru.yandex.practicum.task.tasks;
 
 import ru.yandex.practicum.task.enums.TaskStatus;
+import ru.yandex.practicum.task.enums.TaskType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,11 @@ public class Epic extends Task {
     @Override
     public void setStatus(TaskStatus status) {
         System.out.println("У эпика нельзя поменять статус");
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d,%s,%s,%s,%s", getId(), TaskType.EPIC, getName(), getStatus(), getDescription());
     }
 
     private TaskStatus getStatusBySubtasks(List<Subtask> subtasks) {
