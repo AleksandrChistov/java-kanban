@@ -1,9 +1,8 @@
-package ru.yandex.practicum.task;
+package ru.yandex.practicum.task.managers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.task.enums.TaskStatus;
-import ru.yandex.practicum.task.managers.InMemoryHistoryManager;
 import ru.yandex.practicum.task.tasks.Epic;
 import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;

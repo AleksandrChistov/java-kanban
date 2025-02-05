@@ -9,11 +9,11 @@ import ru.yandex.practicum.task.tasks.Task;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Integer, Task> tasksMap = new HashMap<>();
-    private final Map<Integer, Epic> epicsMap = new HashMap<>();
-    private final Map<Integer, Subtask> subtasksMap = new HashMap<>();
+    protected final Map<Integer, Task> tasksMap = new HashMap<>();
+    protected final Map<Integer, Epic> epicsMap = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasksMap = new HashMap<>();
+    protected int lastTaskId = 0;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
-    private int lastTaskId = 0;
 
     @Override
     public Task createTask(Task task) {
@@ -175,7 +175,7 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    private List<Subtask> getSubtasksByEpic(Epic epic) {
+    protected List<Subtask> getSubtasksByEpic(Epic epic) {
         List<Subtask> subtasksOfEpic = new ArrayList<>();
         for (Integer subtaskId : epic.getSubtaskIds()) {
             subtasksOfEpic.add(subtasksMap.get(subtaskId));

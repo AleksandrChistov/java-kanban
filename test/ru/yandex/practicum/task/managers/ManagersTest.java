@@ -1,9 +1,8 @@
-package ru.yandex.practicum.task;
+package ru.yandex.practicum.task.managers;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.task.interfaces.HistoryManager;
 import ru.yandex.practicum.task.interfaces.TaskManager;
-import ru.yandex.practicum.task.managers.Managers;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
