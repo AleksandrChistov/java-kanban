@@ -17,7 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Класс {@code FileBackedTaskManager} расширяет {@link InMemoryTaskManager},
+ * добавляя функциональность сохранения данных о задачах в файл и восстановления данных из файла.
+ * <p>
+ * При каждом изменении состояния задач (создание, обновление, удаление) данные автоматически сохраняются в файл.
+ */
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    /**
+     * Файл, в котором сохраняются данные о задачах.
+     */
     private final File file;
 
     public FileBackedTaskManager(File file) {
@@ -105,6 +114,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return removedSubtask;
     }
 
+    /**
+     * Загружает данные о задачах из файла.
+     * @param file Файл, из которого необходимо загрузить данные.
+     * @return Новый {@code FileBackedTaskManager}, содержащий загруженные данные.
+     */
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         try {
@@ -149,6 +163,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
+    /**
+     * Сохраняет текущее состояние задач в файл.
+     * <p>
+     * Сохраняет задачи, эпики и подзадачи в формате CSV.
+     * @throws ManagerSaveException Если произошла ошибка при сохранении данных в файл.
+     */
     protected void save() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             Map<Integer, Task> sortedTaskMap = new TreeMap<>(tasksMap);
@@ -170,6 +190,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
+    /**
+     * Создает задачу из строки в формате CSV.
+     * @param value Строка, содержащая данные о задаче в формате CSV.
+     * @return Созданная задача.
+     */
     private static Task fromString(String value) {
         String[] parts = value.split(",");
         if (TaskType.EPIC.name().equals(parts[1])) {
