@@ -10,6 +10,7 @@ import ru.yandex.practicum.task.tasks.Task;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -76,15 +77,15 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
     private void createAllTasks() {
         final Task task = new Task(
                 "Test saveTask", "Test saveTask description", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Epic epic = new Epic("Test saveEpic", "Test saveEpic description", TaskStatus.NEW);
         final Epic createdEpic = taskManager.createEpic(epic);
         final Subtask subtask1 = new Subtask(
                 "Test saveSubtask 1", "Test saveSubtask description 1", TaskStatus.NEW,
-                createdEpic.getId(), LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                createdEpic.getId(), LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Subtask subtask2 = new Subtask(
                 "Test saveSubtask 2", "Test saveSubtask description 2", TaskStatus.NEW,
-                createdEpic.getId(), LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                createdEpic.getId(), LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         taskManager.createTask(task);
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);

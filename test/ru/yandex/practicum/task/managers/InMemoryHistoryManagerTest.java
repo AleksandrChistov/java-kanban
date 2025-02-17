@@ -8,6 +8,7 @@ import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,11 +24,11 @@ class InMemoryHistoryManagerTest {
     void add() {
         Task task = new Task(
                 "Task", "Some task", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         Epic epic = new Epic("Epic", "Some epic", TaskStatus.NEW);
         Subtask subtask = new Subtask(
                 "Subtask", "Some subtask", TaskStatus.NEW, 1,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
 
         task.setId(1);
         epic.setId(2);
@@ -44,7 +45,7 @@ class InMemoryHistoryManagerTest {
     void repeatedAdd() {
         Task task = new Task(
                 "Task", "Some task", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         task.setId(1);
 
         historyManager.add(task);
@@ -53,7 +54,7 @@ class InMemoryHistoryManagerTest {
 
         Task taskNewName = new Task(
                 "Task new", "Some task", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         taskNewName.setId(1);
 
         historyManager.add(taskNewName);
@@ -65,7 +66,7 @@ class InMemoryHistoryManagerTest {
     void remove() {
         Task task = new Task(
                 "Task", "Some task", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
 
         task.setId(1);
 
@@ -82,7 +83,7 @@ class InMemoryHistoryManagerTest {
     void checkDouble() {
         Task task = new Task(
                 "Task", "Some task", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
 
         task.setId(1);
 

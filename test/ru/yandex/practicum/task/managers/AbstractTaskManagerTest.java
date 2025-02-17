@@ -9,6 +9,7 @@ import ru.yandex.practicum.task.tasks.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,7 +55,7 @@ abstract class AbstractTaskManagerTest {
         final Epic createdEpic = taskManager.createEpic(epic);
         Subtask subtask = new Subtask(
                 "Test createSubtask", "Test createSubtask description", TaskStatus.NEW, createdEpic.getId(),
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
 
         final Subtask createdSubtask = taskManager.createSubtask(subtask);
         final Subtask savedSubtask = taskManager.getSubtask(createdSubtask.getId());
@@ -72,13 +73,13 @@ abstract class AbstractTaskManagerTest {
     void updateTask() {
         Task task = new Task(
                 "Test updateTask", "Test updateTask description", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Task createdTask = taskManager.createTask(task);
 
         createdTask.setName("New name");
         createdTask.setDescription("New description");
         createdTask.setStatus(TaskStatus.IN_PROGRESS);
-        createdTask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdTask.setStartTime(LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30));
         createdTask.setDuration(Duration.ofMinutes(30));
 
         taskManager.updateTask(createdTask);
@@ -125,12 +126,12 @@ abstract class AbstractTaskManagerTest {
         final Epic createdEpic = taskManager.createEpic(epic);
         Subtask subtask = new Subtask(
                 "Test updateSubtask", "Test updateSubtask description", TaskStatus.NEW, createdEpic.getId(),
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Subtask createdSubtask = taskManager.createSubtask(subtask);
 
         createdSubtask.setName("New name");
         createdSubtask.setDescription("New description");
-        createdSubtask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdSubtask.setStartTime(LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30));
         createdSubtask.setDuration(Duration.ofMinutes(30));
 
         taskManager.updateSubtask(createdSubtask);
@@ -153,13 +154,13 @@ abstract class AbstractTaskManagerTest {
     void cannotUpdateTaskViaCreatedTask() {
         Task task = new Task(
                 "Test task", "Test task description", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Task createdTask = taskManager.createTask(task);
 
         createdTask.setName("New name");
         createdTask.setDescription("New description");
         createdTask.setStatus(TaskStatus.IN_PROGRESS);
-        createdTask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdTask.setStartTime(LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30));
         createdTask.setDuration(Duration.ofMinutes(30));
 
         Task taskFromStore = taskManager.getTask(createdTask.getId());
@@ -180,7 +181,7 @@ abstract class AbstractTaskManagerTest {
         createdEpic.setName("New name");
         createdEpic.setDescription("New description");
         createdEpic.setStatus(TaskStatus.IN_PROGRESS);
-        createdEpic.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdEpic.setStartTime(LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30));
         createdEpic.setDuration(Duration.ofMinutes(30));
 
         Epic epicFromStore = taskManager.getEpic(createdEpic.getId());
@@ -199,13 +200,13 @@ abstract class AbstractTaskManagerTest {
         final Epic createdEpic = taskManager.createEpic(epic);
         Subtask subtask = new Subtask(
                 "Test subtask", "Test subtask description", TaskStatus.NEW, createdEpic.getId(),
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Subtask createdSubtask = taskManager.createSubtask(subtask);
 
         createdSubtask.setName("New name");
         createdSubtask.setDescription("New description");
         createdSubtask.setStatus(TaskStatus.IN_PROGRESS);
-        createdSubtask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdSubtask.setStartTime(LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30));
         createdSubtask.setDuration(Duration.ofMinutes(30));
 
         Subtask subtaskFromStore = taskManager.getSubtask(createdSubtask.getId());
@@ -219,7 +220,7 @@ abstract class AbstractTaskManagerTest {
     }
 
     @Test
-    void updateEpicStatus() {
+    void updateEpicState() {
         Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
         final Epic createdEpic = taskManager.createEpic(epic);
 
@@ -229,7 +230,7 @@ abstract class AbstractTaskManagerTest {
 
         Subtask subtask = new Subtask(
                 "Test subtask", "Test subtask description", TaskStatus.IN_PROGRESS, createdEpic.getId(),
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30), 30);
         taskManager.createSubtask(subtask);
 
         Epic epicFromStore2 = taskManager.getEpic(createdEpic.getId());
@@ -248,10 +249,10 @@ abstract class AbstractTaskManagerTest {
     void deleteAllTasks() {
         Task task1 = new Task(
                 "Test deleteAllTasks 1", "Test deleteAllTasks description 1", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         Task task2 = new Task(
                 "Test deleteAllTasks 2", "Test deleteAllTasks description 2", TaskStatus.NEW,
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         taskManager.createTask(task1);
         taskManager.createTask(task2);
 
@@ -284,10 +285,10 @@ abstract class AbstractTaskManagerTest {
         Epic createdEpic2 = taskManager.createEpic(epic2);
         Subtask subtask1 = new Subtask(
                 "Test deleteAllSubtasks 1", "Test deleteAllSubtasks description 1", TaskStatus.NEW, createdEpic1.getId(),
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         Subtask subtask2 = new Subtask(
                 "Test deleteAllSubtasks 2", "Test deleteAllSubtasks description 2", TaskStatus.NEW, createdEpic2.getId(),
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);
 
@@ -328,7 +329,7 @@ abstract class AbstractTaskManagerTest {
         Epic createdEpic = taskManager.createEpic(epic);
         Subtask subtask = new Subtask(
                 "Test deleteSubtask 1", "Test deleteSubtask description 1", TaskStatus.NEW, createdEpic.getId(),
-                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         taskManager.createSubtask(subtask);
 
         assertEquals(1, taskManager.getAllSubtasks().size(), "Подзадача не была добавлена");
