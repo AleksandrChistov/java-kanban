@@ -78,7 +78,6 @@ public class Task {
         this.duration = duration;
     }
 
-    // todo write tests for it
     public LocalDateTime getEndTime() {
         return startTime.plusMinutes(duration.toMinutes());
     }

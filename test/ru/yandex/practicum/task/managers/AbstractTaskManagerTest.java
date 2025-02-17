@@ -76,11 +76,16 @@ abstract class AbstractTaskManagerTest {
                 LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Task createdTask = taskManager.createTask(task);
 
+        LocalDateTime updatedStartTime = LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 20);
+        Duration updatedDuration = Duration.ofMinutes(15);
+
         createdTask.setName("New name");
         createdTask.setDescription("New description");
         createdTask.setStatus(TaskStatus.IN_PROGRESS);
-        createdTask.setStartTime(LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30));
-        createdTask.setDuration(Duration.ofMinutes(30));
+        createdTask.setStartTime(updatedStartTime);
+        createdTask.setDuration(updatedDuration);
+
+        LocalDateTime calculatedEndTime = updatedStartTime.plus(updatedDuration);
 
         taskManager.updateTask(createdTask);
         Task updatedTask = taskManager.getTask(createdTask.getId());
@@ -91,6 +96,7 @@ abstract class AbstractTaskManagerTest {
         assertEquals(createdTask.getStatus(), updatedTask.getStatus(), "Статусы задач не совпадают.");
         assertEquals(createdTask.getStartTime(), updatedTask.getStartTime(), "Время начала задач не совпадают.");
         assertEquals(createdTask.getDuration(), updatedTask.getDuration(), "Продолжительность задач не совпадает.");
+        assertEquals(calculatedEndTime, updatedTask.getEndTime(), "Время окончания задач не совпадают.");
 
         final List<Task> tasks = taskManager.getAllTasks();
 
@@ -129,10 +135,15 @@ abstract class AbstractTaskManagerTest {
                 LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
         final Subtask createdSubtask = taskManager.createSubtask(subtask);
 
+        LocalDateTime updatedStartTime = LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30);
+        Duration updatedDuration = Duration.ofMinutes(30);
+
         createdSubtask.setName("New name");
         createdSubtask.setDescription("New description");
-        createdSubtask.setStartTime(LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30));
-        createdSubtask.setDuration(Duration.ofMinutes(30));
+        createdSubtask.setStartTime(updatedStartTime);
+        createdSubtask.setDuration(updatedDuration);
+
+        LocalDateTime calculatedEndTime = updatedStartTime.plus(updatedDuration);
 
         taskManager.updateSubtask(createdSubtask);
         Subtask updatedSubtask = taskManager.getSubtask(createdSubtask.getId());
@@ -143,6 +154,7 @@ abstract class AbstractTaskManagerTest {
         assertEquals(createdSubtask.getStatus(), updatedSubtask.getStatus(), "Статусы подзадач не совпадают.");
         assertEquals(createdSubtask.getStartTime(), updatedSubtask.getStartTime(), "Время начала подзадач не совпадают.");
         assertEquals(createdSubtask.getDuration(), updatedSubtask.getDuration(), "Продолжительность подзадач не совпадает.");
+        assertEquals(calculatedEndTime, updatedSubtask.getEndTime(), "Время окончания подзадач не совпадают.");
 
         final List<Subtask> subtasks = taskManager.getAllSubtasks();
 
@@ -220,7 +232,7 @@ abstract class AbstractTaskManagerTest {
     }
 
     @Test
-    void updateEpicState() {
+    void updateEpicStatus() {
         Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
         final Epic createdEpic = taskManager.createEpic(epic);
 
@@ -243,6 +255,41 @@ abstract class AbstractTaskManagerTest {
         Epic epicFromStore3 = taskManager.getEpic(createdEpic.getId());
 
         assertEquals(TaskStatus.DONE, epicFromStore3.getStatus(), "После обновления статуса подзадачи статусы эпика не совпадают.");
+    }
+
+    @Test
+    void updateEpicTimeState() {
+        Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
+        final Epic createdEpic = taskManager.createEpic(epic);
+
+        Epic epicFromStore1 = taskManager.getEpic(createdEpic.getId());
+
+        assertNull(epicFromStore1.getStartTime(), "После создания эпика время начала эпиков не совпадают.");
+        assertEquals(Duration.ZERO, epicFromStore1.getDuration(), "После создания эпика продолжительность эпиков не совпадают.");
+        assertNull(epicFromStore1.getEndTime(), "После создания эпика время окончания эпиков не совпадают.");
+
+        LocalDateTime startTimeMore = LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30);
+        Duration newDuration1 = Duration.ofMinutes(30);
+        Subtask subtask = new Subtask(
+                "Test subtask", "Test subtask description", TaskStatus.NEW,
+                createdEpic.getId(), startTimeMore, newDuration1.toMinutes());
+        taskManager.createSubtask(subtask);
+
+        LocalDateTime startTimeLess = LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0);
+        Duration newDuration2 = Duration.ofMinutes(60);
+        Subtask subtask2 = new Subtask(
+                "Test subtask2", "Test subtask2 description", TaskStatus.NEW,
+                createdEpic.getId(), startTimeLess, newDuration2.toMinutes());
+        taskManager.createSubtask(subtask2);
+
+        Epic epicFromStore2 = taskManager.getEpic(createdEpic.getId());
+
+        Duration calculatedDuration = newDuration1.plus(newDuration2);
+        LocalDateTime calculatedEndTime = startTimeMore.plus(calculatedDuration);
+
+        assertEquals(startTimeLess, epicFromStore2.getStartTime(), "После добавления подзадач время начала эпиков не совпадают.");
+        assertEquals(calculatedDuration, epicFromStore2.getDuration(), "После добавления подзадач продолжительность эпиков не совпадают.");
+        assertEquals(calculatedEndTime, epicFromStore2.getEndTime(), "После добавления подзадач время окончания эпиков не совпадают.");
     }
 
     @Test
