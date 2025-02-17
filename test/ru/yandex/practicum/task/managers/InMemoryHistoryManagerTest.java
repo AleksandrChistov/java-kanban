@@ -7,6 +7,8 @@ import ru.yandex.practicum.task.tasks.Epic;
 import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHistoryManagerTest {
@@ -19,9 +21,13 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void add() {
-        Task task = new Task("Task", "Some task", TaskStatus.NEW);
+        Task task = new Task(
+                "Task", "Some task", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         Epic epic = new Epic("Epic", "Some epic", TaskStatus.NEW);
-        Subtask subtask = new Subtask("Subtask", "Some subtask", TaskStatus.NEW, 1);
+        Subtask subtask = new Subtask(
+                "Subtask", "Some subtask", TaskStatus.NEW, 1,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
 
         task.setId(1);
         epic.setId(2);
@@ -36,14 +42,18 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void repeatedAdd() {
-        Task task = new Task("Task", "Some task", TaskStatus.NEW);
+        Task task = new Task(
+                "Task", "Some task", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         task.setId(1);
 
         historyManager.add(task);
 
         assertEquals("Task", historyManager.getHistory().getFirst().getName(), "Имя добавленной задачи отличается от ожидаемого");
 
-        Task taskNewName = new Task("Task new", "Some task", TaskStatus.NEW);
+        Task taskNewName = new Task(
+                "Task new", "Some task", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         taskNewName.setId(1);
 
         historyManager.add(taskNewName);
@@ -53,7 +63,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void remove() {
-        Task task = new Task("Task", "Some task", TaskStatus.NEW);
+        Task task = new Task(
+                "Task", "Some task", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
 
         task.setId(1);
 
@@ -68,7 +80,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void checkDouble() {
-        Task task = new Task("Task", "Some task", TaskStatus.NEW);
+        Task task = new Task(
+                "Task", "Some task", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
 
         task.setId(1);
 

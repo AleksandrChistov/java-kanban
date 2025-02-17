@@ -41,15 +41,15 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask createSubtask(Subtask subtask) {
         subtask.setId(++lastTaskId);
 
-        Subtask newSubtask = new Subtask(subtask.getName(), subtask.getDescription(), subtask.getStatus(), subtask.getEpicId());
+        Subtask newSubtask = new Subtask(
+                subtask.getName(), subtask.getDescription(), subtask.getStatus(),
+                subtask.getEpicId(), subtask.getStartTime(), subtask.getDuration().toMinutes());
         newSubtask.setId(subtask.getId());
         subtasksMap.put(newSubtask.getId(), newSubtask);
 
         Epic epic = epicsMap.get(subtask.getEpicId());
         epic.addSubtaskId(newSubtask.getId());
-
-        List<Subtask> subtasksOfEpic = getSubtasksByEpic(epic);
-        epic.calculateAndSetStatus(subtasksOfEpic);
+        epic.calculateState(getSubtasksByEpic(epic));
 
         return subtask;
     }
@@ -70,8 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epicsMap.get(subtask.getEpicId());
         if (epic != null) {
             updatedSubtask = subtasksMap.put(subtask.getId(), subtask);
-            List<Subtask> subtasksOfEpic = getSubtasksByEpic(epic);
-            epic.calculateAndSetStatus(subtasksOfEpic);
+            epic.calculateState(getSubtasksByEpic(epic));
         }
         return updatedSubtask;
     }
@@ -163,8 +162,7 @@ public class InMemoryTaskManager implements TaskManager {
                 historyManager.remove(epic.getId());
                 epicsMap.remove(epic.getId());
             } else {
-                List<Subtask> subtasksOfEpic = getSubtasksByEpic(epic);
-                epic.calculateAndSetStatus(subtasksOfEpic);
+                epic.calculateState(getSubtasksByEpic(epic));
             }
         }
         return removedSubtask;

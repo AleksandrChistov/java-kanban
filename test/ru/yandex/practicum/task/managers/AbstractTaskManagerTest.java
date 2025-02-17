@@ -7,6 +7,8 @@ import ru.yandex.practicum.task.tasks.Epic;
 import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +52,9 @@ abstract class AbstractTaskManagerTest {
     void createSubtask() {
         Epic epic = new Epic("Epic", "Epic description", TaskStatus.NEW);
         final Epic createdEpic = taskManager.createEpic(epic);
-        Subtask subtask = new Subtask("Test createSubtask", "Test createSubtask description", TaskStatus.NEW, createdEpic.getId());
+        Subtask subtask = new Subtask(
+                "Test createSubtask", "Test createSubtask description", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
 
         final Subtask createdSubtask = taskManager.createSubtask(subtask);
         final Subtask savedSubtask = taskManager.getSubtask(createdSubtask.getId());
@@ -66,12 +70,16 @@ abstract class AbstractTaskManagerTest {
 
     @Test
     void updateTask() {
-        Task task = new Task("Test updateTask", "Test updateTask description", TaskStatus.NEW);
+        Task task = new Task(
+                "Test updateTask", "Test updateTask description", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         final Task createdTask = taskManager.createTask(task);
 
         createdTask.setName("New name");
         createdTask.setDescription("New description");
         createdTask.setStatus(TaskStatus.IN_PROGRESS);
+        createdTask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdTask.setDuration(Duration.ofMinutes(30));
 
         taskManager.updateTask(createdTask);
         Task updatedTask = taskManager.getTask(createdTask.getId());
@@ -80,6 +88,8 @@ abstract class AbstractTaskManagerTest {
         assertEquals(createdTask.getName(), updatedTask.getName(), "Имена задач не совпадают.");
         assertEquals(createdTask.getDescription(), updatedTask.getDescription(), "Описание задач не совпадают.");
         assertEquals(createdTask.getStatus(), updatedTask.getStatus(), "Статусы задач не совпадают.");
+        assertEquals(createdTask.getStartTime(), updatedTask.getStartTime(), "Время начала задач не совпадают.");
+        assertEquals(createdTask.getDuration(), updatedTask.getDuration(), "Продолжительность задач не совпадает.");
 
         final List<Task> tasks = taskManager.getAllTasks();
 
@@ -113,11 +123,15 @@ abstract class AbstractTaskManagerTest {
     void updateSubtask() {
         Epic epic = new Epic("Epic", "Epic description", TaskStatus.NEW);
         final Epic createdEpic = taskManager.createEpic(epic);
-        Subtask subtask = new Subtask("Test updateSubtask", "Test updateSubtask description", TaskStatus.NEW, createdEpic.getId());
+        Subtask subtask = new Subtask(
+                "Test updateSubtask", "Test updateSubtask description", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         final Subtask createdSubtask = taskManager.createSubtask(subtask);
 
         createdSubtask.setName("New name");
         createdSubtask.setDescription("New description");
+        createdSubtask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdSubtask.setDuration(Duration.ofMinutes(30));
 
         taskManager.updateSubtask(createdSubtask);
         Subtask updatedSubtask = taskManager.getSubtask(createdSubtask.getId());
@@ -126,6 +140,8 @@ abstract class AbstractTaskManagerTest {
         assertEquals(createdSubtask.getName(), updatedSubtask.getName(), "Имена подзадач не совпадают.");
         assertEquals(createdSubtask.getDescription(), updatedSubtask.getDescription(), "Описание подзадач не совпадают.");
         assertEquals(createdSubtask.getStatus(), updatedSubtask.getStatus(), "Статусы подзадач не совпадают.");
+        assertEquals(createdSubtask.getStartTime(), updatedSubtask.getStartTime(), "Время начала подзадач не совпадают.");
+        assertEquals(createdSubtask.getDuration(), updatedSubtask.getDuration(), "Продолжительность подзадач не совпадает.");
 
         final List<Subtask> subtasks = taskManager.getAllSubtasks();
 
@@ -135,12 +151,16 @@ abstract class AbstractTaskManagerTest {
 
     @Test
     void cannotUpdateTaskViaCreatedTask() {
-        Task task = new Task("Test task", "Test task description", TaskStatus.NEW);
+        Task task = new Task(
+                "Test task", "Test task description", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         final Task createdTask = taskManager.createTask(task);
 
         createdTask.setName("New name");
         createdTask.setDescription("New description");
         createdTask.setStatus(TaskStatus.IN_PROGRESS);
+        createdTask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdTask.setDuration(Duration.ofMinutes(30));
 
         Task taskFromStore = taskManager.getTask(createdTask.getId());
 
@@ -148,6 +168,8 @@ abstract class AbstractTaskManagerTest {
         assertNotEquals(createdTask.getName(), taskFromStore.getName(), "Имена задач совпадают.");
         assertNotEquals(createdTask.getDescription(), taskFromStore.getDescription(), "Описание задач совпадают.");
         assertNotEquals(createdTask.getStatus(), taskFromStore.getStatus(), "Статусы задач совпадают.");
+        assertNotEquals(createdTask.getStartTime(), taskFromStore.getStartTime(), "Время начала задач совпадают.");
+        assertNotEquals(createdTask.getDuration(), taskFromStore.getDuration(), "Продолжительность задач совпадает.");
     }
 
     @Test
@@ -158,6 +180,8 @@ abstract class AbstractTaskManagerTest {
         createdEpic.setName("New name");
         createdEpic.setDescription("New description");
         createdEpic.setStatus(TaskStatus.IN_PROGRESS);
+        createdEpic.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdEpic.setDuration(Duration.ofMinutes(30));
 
         Epic epicFromStore = taskManager.getEpic(createdEpic.getId());
 
@@ -165,18 +189,24 @@ abstract class AbstractTaskManagerTest {
         assertNotEquals(createdEpic.getName(), epicFromStore.getName(), "Имена эпиков совпадают.");
         assertNotEquals(createdEpic.getDescription(), epicFromStore.getDescription(), "Описание эпиков совпадают.");
         assertEquals(createdEpic.getStatus(), epicFromStore.getStatus(), "У эпика нельзя поменять статус.");
+        assertNotEquals(createdEpic.getStartTime(), epicFromStore.getStartTime(), "Время начала эпиков совпадают.");
+        assertNotEquals(createdEpic.getDuration(), epicFromStore.getDuration(), "Продолжительность эпиков совпадает.");
     }
 
     @Test
     void cannotUpdateSubtaskViaCreatedSubtask() {
         Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
         final Epic createdEpic = taskManager.createEpic(epic);
-        Subtask subtask = new Subtask("Test subtask", "Test subtask description", TaskStatus.NEW, createdEpic.getId());
+        Subtask subtask = new Subtask(
+                "Test subtask", "Test subtask description", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         final Subtask createdSubtask = taskManager.createSubtask(subtask);
 
         createdSubtask.setName("New name");
         createdSubtask.setDescription("New description");
         createdSubtask.setStatus(TaskStatus.IN_PROGRESS);
+        createdSubtask.setStartTime(LocalDateTime.of(2025, 2, 16, 22, 30));
+        createdSubtask.setDuration(Duration.ofMinutes(30));
 
         Subtask subtaskFromStore = taskManager.getSubtask(createdSubtask.getId());
 
@@ -184,6 +214,8 @@ abstract class AbstractTaskManagerTest {
         assertNotEquals(createdSubtask.getName(), subtaskFromStore.getName(), "Имена подзадач совпадают.");
         assertNotEquals(createdSubtask.getDescription(), subtaskFromStore.getDescription(), "Описание подзадач совпадают.");
         assertNotEquals(createdSubtask.getStatus(), subtaskFromStore.getStatus(), "Статусы подзадач совпадают.");
+        assertNotEquals(createdSubtask.getStartTime(), subtaskFromStore.getStartTime(), "Время начала подзадач совпадают.");
+        assertNotEquals(createdSubtask.getDuration(), subtaskFromStore.getDuration(), "Продолжительность подзадач совпадает.");
     }
 
     @Test
@@ -195,7 +227,9 @@ abstract class AbstractTaskManagerTest {
 
         assertEquals(TaskStatus.NEW, epicFromStore1.getStatus(), "После создания эпика статусы не совпадают.");
 
-        Subtask subtask = new Subtask("Test subtask", "Test subtask description", TaskStatus.IN_PROGRESS, createdEpic.getId());
+        Subtask subtask = new Subtask(
+                "Test subtask", "Test subtask description", TaskStatus.IN_PROGRESS, createdEpic.getId(),
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         taskManager.createSubtask(subtask);
 
         Epic epicFromStore2 = taskManager.getEpic(createdEpic.getId());
@@ -212,8 +246,12 @@ abstract class AbstractTaskManagerTest {
 
     @Test
     void deleteAllTasks() {
-        Task task1 = new Task("Test deleteAllTasks 1", "Test deleteAllTasks description 1", TaskStatus.NEW);
-        Task task2 = new Task("Test deleteAllTasks 2", "Test deleteAllTasks description 2", TaskStatus.NEW);
+        Task task1 = new Task(
+                "Test deleteAllTasks 1", "Test deleteAllTasks description 1", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+        Task task2 = new Task(
+                "Test deleteAllTasks 2", "Test deleteAllTasks description 2", TaskStatus.NEW,
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         taskManager.createTask(task1);
         taskManager.createTask(task2);
 
@@ -244,8 +282,12 @@ abstract class AbstractTaskManagerTest {
         Epic epic2 = new Epic("Test deleteAllSubtasks 2", "Test deleteAllSubtasks description 2", TaskStatus.NEW);
         Epic createdEpic1 = taskManager.createEpic(epic1);
         Epic createdEpic2 = taskManager.createEpic(epic2);
-        Subtask subtask1 = new Subtask("Test deleteAllSubtasks 1", "Test deleteAllSubtasks description 1", TaskStatus.NEW, createdEpic1.getId());
-        Subtask subtask2 = new Subtask("Test deleteAllSubtasks 2", "Test deleteAllSubtasks description 2", TaskStatus.NEW, createdEpic2.getId());
+        Subtask subtask1 = new Subtask(
+                "Test deleteAllSubtasks 1", "Test deleteAllSubtasks description 1", TaskStatus.NEW, createdEpic1.getId(),
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
+        Subtask subtask2 = new Subtask(
+                "Test deleteAllSubtasks 2", "Test deleteAllSubtasks description 2", TaskStatus.NEW, createdEpic2.getId(),
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);
 
@@ -284,7 +326,9 @@ abstract class AbstractTaskManagerTest {
     void deleteSubtask() {
         Epic epic = new Epic("Test deleteSubtask", "Test deleteSubtask description", TaskStatus.NEW);
         Epic createdEpic = taskManager.createEpic(epic);
-        Subtask subtask = new Subtask("Test deleteSubtask 1", "Test deleteSubtask description 1", TaskStatus.NEW, createdEpic.getId());
+        Subtask subtask = new Subtask(
+                "Test deleteSubtask 1", "Test deleteSubtask description 1", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, 2, 16, 22, 0), 0);
         taskManager.createSubtask(subtask);
 
         assertEquals(1, taskManager.getAllSubtasks().size(), "Подзадача не была добавлена");
