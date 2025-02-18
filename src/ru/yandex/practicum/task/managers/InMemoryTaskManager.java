@@ -250,31 +250,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    // todo write tests for it
     private boolean isTimeIntersected(Task task) {
-        Optional<? extends Task> found = Stream.concat(tasksMap.values().stream(), subtasksMap.values().stream())
-                .filter(t -> !task.equals(t))
-                .filter(t -> _isIntersectedByTime(t, task))
-                .findAny();
-
-        if (found.isPresent()) {
-            System.out.println("Время выполнения задач пересекается");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean _isIntersectedByTime(Task task1, Task task2) {
-        LocalDateTime start1 = task1.getStartTime();
-        LocalDateTime start2 = task2.getStartTime();
-        LocalDateTime end1 = task1.getStartTime().plus(task1.getDuration());
-        LocalDateTime end2 = task2.getStartTime().plus(task2.getDuration());
-
-        if (start1 == null || start2 == null) {
-            return false;
-        }
-
-        return !((start1.isAfter(end2) || start1.isEqual(end2)) || (end1.isBefore(start2) || end1.isEqual(start2)));
+        return TaskManagerUtil.isTimeIntersected(task, tasksMap.values(), subtasksMap.values());
     }
 
 }
