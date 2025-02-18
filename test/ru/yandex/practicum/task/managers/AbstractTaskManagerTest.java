@@ -232,7 +232,7 @@ abstract class AbstractTaskManagerTest {
     }
 
     @Test
-    void updateEpicStatus() {
+    void changeEpicStatusNew() {
         Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
         final Epic createdEpic = taskManager.createEpic(epic);
 
@@ -240,21 +240,87 @@ abstract class AbstractTaskManagerTest {
 
         assertEquals(TaskStatus.NEW, epicFromStore1.getStatus(), "После создания эпика статусы не совпадают.");
 
-        Subtask subtask = new Subtask(
-                "Test subtask", "Test subtask description", TaskStatus.IN_PROGRESS, createdEpic.getId(),
-                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30), 30);
-        taskManager.createSubtask(subtask);
+        Subtask subtask1 = new Subtask(
+                "Test subtask1", "Test subtask description1", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 30);
+        Subtask subtask2 = new Subtask(
+                "Test subtask2", "Test subtask description2", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30), 20);
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
 
         Epic epicFromStore2 = taskManager.getEpic(createdEpic.getId());
 
-        assertEquals(TaskStatus.IN_PROGRESS, epicFromStore2.getStatus(), "После добавления подзадачи статусы эпика не совпадают.");
+        assertEquals(TaskStatus.NEW, epicFromStore2.getStatus(), "После добавления подзадач статусы эпика не совпадают.");
+    }
 
-        subtask.setStatus(TaskStatus.DONE);
-        taskManager.updateSubtask(subtask);
+    @Test
+    void changeEpicStatusDone() {
+        Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
+        final Epic createdEpic = taskManager.createEpic(epic);
 
-        Epic epicFromStore3 = taskManager.getEpic(createdEpic.getId());
+        Epic epicFromStore1 = taskManager.getEpic(createdEpic.getId());
 
-        assertEquals(TaskStatus.DONE, epicFromStore3.getStatus(), "После обновления статуса подзадачи статусы эпика не совпадают.");
+        assertEquals(TaskStatus.NEW, epicFromStore1.getStatus(), "После создания эпика статусы не совпадают.");
+
+        Subtask subtask1 = new Subtask(
+                "Test subtask1", "Test subtask description1", TaskStatus.DONE, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 30);
+        Subtask subtask2 = new Subtask(
+                "Test subtask2", "Test subtask description2", TaskStatus.DONE, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30), 20);
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
+
+        Epic epicFromStore2 = taskManager.getEpic(createdEpic.getId());
+
+        assertEquals(TaskStatus.DONE, epicFromStore2.getStatus(), "После добавления подзадач статусы эпика не совпадают.");
+    }
+
+    @Test
+    void changeEpicStatusNewAndDone() {
+        Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
+        final Epic createdEpic = taskManager.createEpic(epic);
+
+        Epic epicFromStore1 = taskManager.getEpic(createdEpic.getId());
+
+        assertEquals(TaskStatus.NEW, epicFromStore1.getStatus(), "После создания эпика статусы не совпадают.");
+
+        Subtask subtask1 = new Subtask(
+                "Test subtask1", "Test subtask description1", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 30);
+        Subtask subtask2 = new Subtask(
+                "Test subtask2", "Test subtask description2", TaskStatus.DONE, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30), 20);
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
+
+        Epic epicFromStore2 = taskManager.getEpic(createdEpic.getId());
+
+        assertEquals(TaskStatus.NEW, epicFromStore2.getStatus(), "После добавления подзадач статусы эпика не совпадают.");
+    }
+
+    @Test
+    void changeEpicStatusInProgress() {
+        Epic epic = new Epic("Test epic", "Test epic description", TaskStatus.NEW);
+        final Epic createdEpic = taskManager.createEpic(epic);
+
+        Epic epicFromStore1 = taskManager.getEpic(createdEpic.getId());
+
+        assertEquals(TaskStatus.NEW, epicFromStore1.getStatus(), "После создания эпика статусы не совпадают.");
+
+        Subtask subtask1 = new Subtask(
+                "Test subtask1", "Test subtask description1", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 30);
+        Subtask subtask2 = new Subtask(
+                "Test subtask2", "Test subtask description2", TaskStatus.IN_PROGRESS, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30), 20);
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
+
+        Epic epicFromStore2 = taskManager.getEpic(createdEpic.getId());
+
+        assertEquals(TaskStatus.IN_PROGRESS, epicFromStore2.getStatus(), "После добавления подзадач статусы эпика не совпадают.");
     }
 
     @Test
