@@ -19,8 +19,8 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-        this.duration = Duration.ofMinutes(durationMinute);
         this.startTime = startTime;
+        this.duration = Duration.ofMinutes(durationMinute);
     }
 
     public Task(String name, String description, TaskStatus status) {
