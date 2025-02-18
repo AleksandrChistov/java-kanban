@@ -7,9 +7,7 @@ import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
 import ru.yandex.practicum.task.utils.TaskManagerUtil;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasksMap = new HashMap<>();
@@ -251,7 +249,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private boolean isTimeIntersected(Task task) {
-        return TaskManagerUtil.isTimeIntersected(task, tasksMap.values(), subtasksMap.values());
+        return TaskManagerUtil.isTimeIntersected(task, prioritizedTasks);
     }
 
 }

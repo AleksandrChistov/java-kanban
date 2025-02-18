@@ -7,7 +7,6 @@ import ru.yandex.practicum.task.tasks.Task;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class TaskManagerUtil {
 
@@ -32,8 +31,8 @@ public class TaskManagerUtil {
         return (T) newTask;
     }
 
-    public static boolean isTimeIntersected(Task task, Collection<Task> tasks, Collection<Subtask> subtasks) {
-        Optional<? extends Task> found = Stream.concat(tasks.stream(), subtasks.stream())
+    public static boolean isTimeIntersected(Task task, Collection<Task> tasks) {
+        Optional<Task> found = tasks.stream()
                 .filter(t -> !task.equals(t))
                 .filter(t -> isIntersectedByTime(t, task))
                 .findAny();

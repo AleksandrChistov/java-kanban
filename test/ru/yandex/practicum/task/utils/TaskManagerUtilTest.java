@@ -1,9 +1,7 @@
 package ru.yandex.practicum.task.utils;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.task.enums.TaskStatus;
-import ru.yandex.practicum.task.interfaces.TaskManager;
 import ru.yandex.practicum.task.tasks.Epic;
 import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
@@ -12,7 +10,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TaskManagerUtilTest {
 
@@ -36,7 +35,7 @@ class TaskManagerUtilTest {
                 LocalDateTime.of(2025, Month.FEBRUARY, 16, 20, 0), 15);
         subtask2.setId(4);
 
-        boolean isIntersected = TaskManagerUtil.isTimeIntersected(subtaskIntersected, Set.of(task1, task2), Set.of(subtaskIntersected, subtask2));
+        boolean isIntersected = TaskManagerUtil.isTimeIntersected(subtaskIntersected, Set.of(task1, task2, subtaskIntersected, subtask2));
 
         assertTrue(isIntersected, "Задача не нашла пересечение по времени выполнения");
     }
@@ -61,7 +60,7 @@ class TaskManagerUtilTest {
                 LocalDateTime.of(2025, Month.FEBRUARY, 16, 20, 0), 15);
         subtask2.setId(4);
 
-        boolean isIntersected = TaskManagerUtil.isTimeIntersected(subtaskIntersected, Set.of(task1, task2), Set.of(subtaskIntersected, subtask2));
+        boolean isIntersected = TaskManagerUtil.isTimeIntersected(subtaskIntersected, Set.of(task1, task2, subtaskIntersected, subtask2));
 
         assertFalse(isIntersected, "Задача пересекается по времени выполнения");
     }
