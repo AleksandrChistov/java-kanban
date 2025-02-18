@@ -33,7 +33,7 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskMa
         assertTrue(file.exists(), "Файла не существует");
         assertEquals(0, file.length(), "Файл не пустой");
 
-        ((FileBackedTaskManager) taskManager).save();
+        taskManager.save();
 
         assertTrue(file.exists(), "После сохранения - файл не найден");
         assertEquals(0, file.length(), "После сохранение - файл не пустой");
