@@ -275,7 +275,7 @@ abstract class AbstractTaskManagerTest {
                 createdEpic.getId(), startTimeMore, newDuration1.toMinutes());
         taskManager.createSubtask(subtask);
 
-        LocalDateTime startTimeLess = LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0);
+        LocalDateTime startTimeLess = LocalDateTime.of(2025, Month.FEBRUARY, 16, 21, 30);
         Duration newDuration2 = Duration.ofMinutes(60);
         Subtask subtask2 = new Subtask(
                 "Test subtask2", "Test subtask2 description", TaskStatus.NEW,
