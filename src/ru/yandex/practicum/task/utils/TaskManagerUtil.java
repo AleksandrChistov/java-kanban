@@ -11,7 +11,7 @@ import java.util.Optional;
 public class TaskManagerUtil {
 
     @SuppressWarnings("unchecked")
-    public static <T extends Task> T getNewTask(T task) {
+    public static <T extends Task> T getCopyTask(T task) {
         if (task instanceof Epic) {
             Epic newEpic = new Epic(task.getName(), task.getDescription(), task.getStatus());
             newEpic.setId(task.getId());

@@ -7,6 +7,7 @@ import ru.yandex.practicum.task.tasks.Epic;
 import ru.yandex.practicum.task.tasks.Subtask;
 import ru.yandex.practicum.task.tasks.Task;
 import ru.yandex.practicum.task.utils.DateTimeTaskUtil;
+import ru.yandex.practicum.task.utils.TaskManagerUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -151,24 +152,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = fromString(line);
 
                 if (task instanceof Epic) {
-                    Epic newEpic = new Epic(task.getName(), task.getDescription(), task.getStatus());
+                    Epic newEpic = TaskManagerUtil.getCopyTask((Epic) task);
                     newEpic.setId(++manager.lastTaskId);
                     manager.epicsMap.put(newEpic.getId(), newEpic);
                 } else if (task instanceof Subtask) {
-                    Subtask newSubtask = new Subtask(
-                            task.getName(), task.getDescription(), task.getStatus(),
-                            ((Subtask) task).getEpicId(), task.getStartTime(), task.getDuration().toMinutes());
-                    newSubtask.setId(manager.lastTaskId++);
+                    Subtask newSubtask = TaskManagerUtil.getCopyTask((Subtask) task);
+                    newSubtask.setId(++manager.lastTaskId);
                     manager.subtasksMap.put(newSubtask.getId(), newSubtask);
 
                     Epic epic = manager.epicsMap.get(((Subtask) task).getEpicId());
                     epic.addSubtaskId(newSubtask.getId());
                     epic.calculateState(manager.getSubtasksByEpic(epic));
                 } else {
-                    Task newTask = new Task(
-                            task.getName(), task.getDescription(), task.getStatus(),
-                            task.getStartTime(), task.getDuration().toMinutes());
-                    newTask.setId(manager.lastTaskId++);
+                    Task newTask = TaskManagerUtil.getCopyTask(task);
+                    newTask.setId(++manager.lastTaskId);
                     manager.tasksMap.put(newTask.getId(), newTask);
                 }
             }

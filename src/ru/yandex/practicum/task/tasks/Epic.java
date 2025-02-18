@@ -54,16 +54,17 @@ public class Epic extends Task {
     }
 
     private void calculateAndSetTimeFields(List<Subtask> subtasks) {
-        // todo improve algorithm
         duration = subtasks.stream()
                 .map(Task::getDuration)
                 .reduce(Duration.ZERO, Duration::plus);
         startTime = subtasks.stream()
                 .map(Task::getStartTime)
-                .min(Comparator.naturalOrder()).orElse(null);
+                .min(Comparator.naturalOrder())
+                .orElse(null);
         endTime = subtasks.stream()
                 .map(t -> t.getStartTime().plus(duration))
-                .max(Comparator.naturalOrder()).orElse(null);
+                .max(Comparator.naturalOrder())
+                .orElse(null);
     }
 
     private void calculateAndSetStatus(List<Subtask> subtasks) {

@@ -8,6 +8,7 @@ import ru.yandex.practicum.task.tasks.Task;
 import ru.yandex.practicum.task.utils.TaskManagerUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasksMap = new HashMap<>();
@@ -24,7 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         task.setId(++lastTaskId);
-        Task newTask = TaskManagerUtil.getNewTask(task);
+        Task newTask = TaskManagerUtil.getCopyTask(task);
         tasksMap.put(newTask.getId(), newTask);
 
         if (newTask.getStartTime() != null) {
@@ -37,7 +38,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic createEpic(Epic epic) {
         epic.setId(++lastTaskId);
-        Epic newEpic = TaskManagerUtil.getNewTask(epic);
+        Epic newEpic = TaskManagerUtil.getCopyTask(epic);
         epicsMap.put(newEpic.getId(), newEpic);
         return epic;
     }
@@ -49,7 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         subtask.setId(++lastTaskId);
-        Subtask newSubtask = TaskManagerUtil.getNewTask(subtask);
+        Subtask newSubtask = TaskManagerUtil.getCopyTask(subtask);
         subtasksMap.put(newSubtask.getId(), newSubtask);
 
         if (newSubtask.getStartTime() != null) {
@@ -70,7 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         updateOrRemovePrioritizedTask(task);
 
-        Task newTask = TaskManagerUtil.getNewTask(task);
+        Task newTask = TaskManagerUtil.getCopyTask(task);
         tasksMap.put(newTask.getId(), newTask);
 
         return task;
@@ -78,7 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic updateEpic(Epic epic) {
-        Epic newEpic = TaskManagerUtil.getNewTask(epic);
+        Epic newEpic = TaskManagerUtil.getCopyTask(epic);
 
         subtasksMap.values().stream()
                 .filter(t -> t.getEpicId() == newEpic.getId())
@@ -106,7 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             updateOrRemovePrioritizedTask(subtask);
 
-            Subtask newSubtask = TaskManagerUtil.getNewTask(subtask);
+            Subtask newSubtask = TaskManagerUtil.getCopyTask(subtask);
             subtasksMap.put(newSubtask.getId(), newSubtask);
             updatedSubtask = subtask;
 
@@ -225,11 +226,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     protected List<Subtask> getSubtasksByEpic(Epic epic) {
-        List<Subtask> subtasksOfEpic = new ArrayList<>();
-        for (Integer subtaskId : epic.getSubtaskIds()) {
-            subtasksOfEpic.add(subtasksMap.get(subtaskId));
-        }
-        return subtasksOfEpic;
+        return epic.getSubtaskIds().stream()
+                .map(subtasksMap::get)
+                .collect(Collectors.toList());
     }
 
     private void updateOrRemovePrioritizedTask(Task task) {
