@@ -10,7 +10,7 @@ import ru.yandex.practicum.task.tasks.Task;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -385,5 +385,55 @@ abstract class AbstractTaskManagerTest {
 
         assertTrue(taskManager.getAllSubtasks().isEmpty(), "Подзадача не была удалена");
         assertTrue(epic.getSubtaskIds().isEmpty(), "ID подзадачи внутри эпика не был удален");
+    }
+
+    @Test
+    void getPrioritizedTasks() {
+        Task task1 = new Task(
+                "Test prioritized task 1", "Test prioritized task description 1", TaskStatus.NEW,
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
+        Task task2 = new Task(
+                "Test prioritized task 2", "Test prioritized task description 2", TaskStatus.NEW,
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 21, 10), 0);
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+
+        Epic epic1 = new Epic("Test prioritized epic 1", "Test prioritized epic description 1", TaskStatus.NEW);
+        Epic epic2 = new Epic("Test prioritized epic 2", "Test prioritized epic description 2", TaskStatus.NEW);
+        Epic createdEpic1 = taskManager.createEpic(epic1);
+        Epic createdEpic2 = taskManager.createEpic(epic2);
+        Subtask subtask1 = new Subtask(
+                "Test prioritized subtask 1", "Test prioritized subtask description 1", TaskStatus.NEW, createdEpic1.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 10), 0);
+        Subtask subtask2 = new Subtask(
+                "Test prioritized subtask 2", "Test prioritized subtask description 2", TaskStatus.NEW, createdEpic2.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 21, 0), 0);
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
+
+        Set<Task> expectedPrioritizedTasks = new LinkedHashSet<>(Arrays.asList(subtask2, task2, task1, subtask1));
+
+        assertIterableEquals(expectedPrioritizedTasks, taskManager.getPrioritizedTasks(), "Задачи были остортированы неверно");
+    }
+
+    @Test
+    void removePrioritizedTask() {
+        Task task = new Task(
+                "Test prioritized task 1", "Test prioritized task description 1", TaskStatus.NEW,
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 0), 0);
+        taskManager.createTask(task);
+
+        Epic epic = new Epic("Test prioritized epic 1", "Test prioritized epic description 1", TaskStatus.NEW);
+        Epic createdEpic = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(
+                "Test prioritized subtask 1", "Test prioritized subtask description 1", TaskStatus.NEW, createdEpic.getId(),
+                LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 10), 0);
+        taskManager.createSubtask(subtask);
+
+        assertIterableEquals(new LinkedHashSet<>(Arrays.asList(task, subtask)), taskManager.getPrioritizedTasks(), "Задачи были остортированы неверно");
+
+        taskManager.deleteTask(task.getId());
+
+        assertIterableEquals(Set.of(subtask), taskManager.getPrioritizedTasks(), "Приоритизированная задача не была удалена");
     }
 }
