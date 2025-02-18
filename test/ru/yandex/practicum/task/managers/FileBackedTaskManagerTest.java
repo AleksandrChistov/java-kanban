@@ -15,7 +15,7 @@ import java.time.Month;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
+class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskManager> {
     File file;
 
     @BeforeEach

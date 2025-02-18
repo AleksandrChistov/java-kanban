@@ -14,8 +14,8 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-abstract class AbstractTaskManagerTest {
-    protected TaskManager taskManager;
+abstract class AbstractTaskManagerTest<T extends TaskManager> {
+    protected T taskManager;
 
     @Test
     void createTask() {
@@ -64,9 +64,11 @@ abstract class AbstractTaskManagerTest {
         assertEquals(subtask, savedSubtask, "Подзадачи не совпадают.");
 
         final List<Subtask> subtasks = taskManager.getAllSubtasks();
+        final Epic epicForSubtask = taskManager.getEpic(savedSubtask.getEpicId());
 
         assertEquals(1, subtasks.size(), "Неверное количество подзадач.");
         assertEquals(subtask, subtasks.getFirst(), "Подзадачи не совпадают.");
+        assertEquals(createdEpic, epicForSubtask, "Связанный с подзадачей эпик не совпадает.");
     }
 
     @Test
