@@ -37,11 +37,7 @@ public class TaskManagerUtil {
                 .filter(t -> isIntersectedByTime(t, task))
                 .findAny();
 
-        if (found.isPresent()) {
-            System.out.println("Время выполнения задач пересекается");
-            return true;
-        }
-        return false;
+        return found.isPresent();
     }
 
     private static boolean isIntersectedByTime(Task task1, Task task2) {
