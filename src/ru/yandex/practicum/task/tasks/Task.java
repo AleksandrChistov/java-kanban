@@ -6,9 +6,10 @@ import ru.yandex.practicum.task.utils.DateTimeTaskUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Task {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     private TaskStatus status;
@@ -30,7 +31,7 @@ public class Task {
         this.duration = Duration.ofMinutes(0);
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -88,7 +89,7 @@ public class Task {
         if (o == null || getClass() != o.getClass()) return false;
 
         Task task = (Task) o;
-        return id == task.id;
+        return Objects.equals(id, task.id);
     }
 
     @Override
