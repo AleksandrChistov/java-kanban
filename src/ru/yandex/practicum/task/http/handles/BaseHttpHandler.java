@@ -20,14 +20,15 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public abstract class BaseHttpHandler implements HttpHandler {
-    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private final String endpointName;
     protected final TaskManager taskManager;
     protected final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
             .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
             .create();
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    abstract protected void handleGetItems(HttpExchange exchange);
+    private final String endpointName;
 
     public BaseHttpHandler(TaskManager taskManager, String endpointName) {
         this.taskManager = taskManager;
@@ -50,7 +51,6 @@ public abstract class BaseHttpHandler implements HttpHandler {
         }
     }
 
-    abstract protected void handleGetItems(HttpExchange exchange);
 
     protected void handleGetItemById(HttpExchange exchange) {
         writeResponse(exchange, "Такой эндпоинт не реализован", 501);
