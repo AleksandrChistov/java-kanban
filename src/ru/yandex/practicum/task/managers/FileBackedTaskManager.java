@@ -150,14 +150,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     continue;
                 }
                 Task task = fromString(line);
+                task.setId(++manager.lastTaskId);
 
                 if (task instanceof Epic) {
                     Epic newEpic = TaskManagerUtil.getCopyTask((Epic) task);
-                    newEpic.setId(++manager.lastTaskId);
                     manager.epicsMap.put(newEpic.getId(), newEpic);
                 } else if (task instanceof Subtask) {
                     Subtask newSubtask = TaskManagerUtil.getCopyTask((Subtask) task);
-                    newSubtask.setId(++manager.lastTaskId);
                     manager.subtasksMap.put(newSubtask.getId(), newSubtask);
 
                     Epic epic = manager.epicsMap.get(((Subtask) task).getEpicId());
@@ -165,7 +164,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     epic.calculateState(manager.getSubtasksByEpic(epic));
                 } else {
                     Task newTask = TaskManagerUtil.getCopyTask(task);
-                    newTask.setId(++manager.lastTaskId);
                     manager.tasksMap.put(newTask.getId(), newTask);
                 }
             }
