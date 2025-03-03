@@ -1,27 +1,33 @@
-package ru.yandex.practicum.task.server;
+package ru.yandex.practicum.task.http;
 
 import com.sun.net.httpserver.HttpServer;
 import ru.yandex.practicum.task.interfaces.TaskManager;
+import ru.yandex.practicum.task.managers.FileBackedTaskManager;
 import ru.yandex.practicum.task.managers.Managers;
-import ru.yandex.practicum.task.server.handles.*;
+import ru.yandex.practicum.task.http.handles.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Objects;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
+    private final TaskManager taskManager;
+    private HttpServer httpServer;
 
-    public static void main(String[] args) {
-        start(Managers.getFileBacked(new File("/tasks.txt")));
+    public HttpTaskServer(TaskManager taskManager) {
+        this.taskManager = taskManager;
     }
 
-    public static void start(TaskManager manager) {
-        TaskManager taskManager = Objects.requireNonNull(manager, "Для запуска сервера необходим объект класса TaskManager");
+    public static void main(String[] args) {
+        FileBackedTaskManager fileBackedTaskManager = Managers.getFileBacked(new File("/tasks.txt"));
+        HttpTaskServer taskServer = new HttpTaskServer(fileBackedTaskManager);
+        taskServer.start();
+    }
 
+    public void start() {
         try {
-            HttpServer httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
+            httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
 
             httpServer.createContext("/tasks", new TasksHandler(taskManager));
             httpServer.createContext("/subtasks", new SubtasksHandler(taskManager));
@@ -35,5 +41,9 @@ public class HttpTaskServer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void stop() {
+        httpServer.stop(0);
     }
 }
