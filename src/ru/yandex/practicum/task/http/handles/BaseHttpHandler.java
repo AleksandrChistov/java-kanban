@@ -27,7 +27,6 @@ public abstract class BaseHttpHandler implements HttpHandler {
             .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
             .create();
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    abstract protected void handleGetItems(HttpExchange exchange);
     private final String endpointName;
 
     public BaseHttpHandler(TaskManager taskManager, String endpointName) {
@@ -51,6 +50,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
         }
     }
 
+    protected abstract void handleGetItems(HttpExchange exchange);
 
     protected void handleGetItemById(HttpExchange exchange) {
         writeResponse(exchange, "Такой эндпоинт не реализован", 501);
