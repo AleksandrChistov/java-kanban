@@ -185,12 +185,19 @@ public class InMemoryTaskManager implements TaskManager {
     public Task deleteTask(int id) {
         prioritizedTasks.removeIf(t -> t.getId() == id);
         historyManager.remove(id);
-        return tasksMap.remove(id);
+        Task removed = tasksMap.remove(id);
+
+        if (removed == null) {
+            throw new NotFoundException(String.valueOf(id));
+        }
+
+        return removed;
     }
 
     @Override
     public Epic deleteEpic(int id) {
         Epic removedEpic = epicsMap.remove(id);
+
         if (removedEpic != null) {
             historyManager.remove(id);
             for (Integer subtaskId : removedEpic.getSubtaskIds()) {
@@ -198,13 +205,17 @@ public class InMemoryTaskManager implements TaskManager {
                 historyManager.remove(subtaskId);
                 subtasksMap.remove(subtaskId);
             }
+        } else {
+            throw new NotFoundException(String.valueOf(id));
         }
+
         return removedEpic;
     }
 
     @Override
     public Subtask deleteSubtask(int id) {
         Subtask removedSubtask = subtasksMap.remove(id);
+
         if (removedSubtask != null) {
             prioritizedTasks.removeIf(t -> t.getId() == id);
             historyManager.remove(id);
@@ -216,7 +227,10 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 epic.calculateState(getSubtasksByEpic(epic));
             }
+        } else {
+            throw new NotFoundException(String.valueOf(id));
         }
+
         return removedSubtask;
     }
 

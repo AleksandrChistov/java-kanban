@@ -1,21 +1,33 @@
-package ru.yandex.practicum.task.server.handles;
+package ru.yandex.practicum.task.http.handles;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.yandex.practicum.task.error.NotFoundException;
+import ru.yandex.practicum.task.http.adapters.DurationTypeAdapter;
+import ru.yandex.practicum.task.http.adapters.LocalDateTimeTypeAdapter;
+import ru.yandex.practicum.task.http.enums.Endpoint;
+import ru.yandex.practicum.task.http.errors.ErrorResponse;
 import ru.yandex.practicum.task.interfaces.TaskManager;
-import ru.yandex.practicum.task.server.enums.Endpoint;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public abstract class BaseHttpHandler implements HttpHandler {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private final String endpointName;
     protected final TaskManager taskManager;
+    protected final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .create();
 
     public BaseHttpHandler(TaskManager taskManager, String endpointName) {
         this.taskManager = taskManager;
@@ -74,23 +86,40 @@ public abstract class BaseHttpHandler implements HttpHandler {
         }
     }
 
-    protected void sendSuccess(HttpExchange exchange) {
-        writeResponse(exchange, "", 200);
+    protected void sendResponse(HttpExchange exchange, Object objectToJson) {
+        String json = gson.toJson(objectToJson);
+        writeResponse(exchange, json, 200);
     }
 
-    protected void sendText(HttpExchange exchange) {
+    protected void sendSuccess(HttpExchange exchange) {
         writeResponse(exchange, "", 201);
     }
 
+    protected void sendBadRequest(HttpExchange exchange, String message) {
+        String errorJson = getErrorJson(message, 400);
+        writeResponse(exchange, errorJson, 400);
+    }
+
     protected void sendNotFound(HttpExchange exchange, String message) {
-        writeResponse(exchange, message, 404);
+        String errorJson = getErrorJson(message, 404);
+        writeResponse(exchange, errorJson, 404);
     }
 
     protected void sendHasInteractions(HttpExchange exchange, String message) {
-        writeResponse(exchange, message, 406);
+        String errorJson = getErrorJson(message, 406);
+        writeResponse(exchange, errorJson, 406);
     }
 
-    protected void writeResponse(HttpExchange exchange, String responseString, int responseCode) {
+    protected void sendServerError(HttpExchange exchange) {
+        String errorJson = getErrorJson("Внутренняя ошибка сервера", 500);
+        writeResponse(exchange, errorJson, 500);
+    }
+
+    private String getErrorJson(String message, int code) {
+        return gson.toJson(new ErrorResponse(message, code));
+    }
+
+    private void writeResponse(HttpExchange exchange, String responseString, int responseCode) {
         try (OutputStream os = exchange.getResponseBody()) {
             exchange.getResponseHeaders().add("Content-type", "application/json;charset=utf-8");
             exchange.sendResponseHeaders(responseCode, 0);
@@ -130,4 +159,5 @@ public abstract class BaseHttpHandler implements HttpHandler {
 
         return Endpoint.UNKNOWN;
     }
+
 }

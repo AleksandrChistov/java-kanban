@@ -1,4 +1,4 @@
-package ru.yandex.practicum.task.server.enums;
+package ru.yandex.practicum.task.http.enums;
 
 public enum Endpoint {
     GET,

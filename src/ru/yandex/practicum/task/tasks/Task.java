@@ -17,14 +17,15 @@ public class Task {
     protected Duration duration;
 
     public Task(String name, String description, TaskStatus status, LocalDateTime startTime, long durationMinute) {
-        this.name = name;
-        this.description = description;
+        this(name, description, status);
         this.status = status;
         this.startTime = startTime;
         this.duration = Duration.ofMinutes(durationMinute);
     }
 
     public Task(String name, String description, TaskStatus status) {
+        Objects.requireNonNull(name, "Имя не может быть пустым");
+        Objects.requireNonNull(status, "Статус задачи не может быть пустым");
         this.name = name;
         this.description = description;
         this.status = status;
