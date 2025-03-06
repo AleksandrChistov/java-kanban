@@ -6,17 +6,18 @@ import ru.yandex.practicum.task.interfaces.TaskManager;
 import java.io.File;
 
 public class Managers {
+    public static File FILE = new File("resources/tasks.txt");
 
-    public static TaskManager getDefault() {
-        return new InMemoryTaskManager();
+    public static FileBackedTaskManager getDefault() {
+        return new FileBackedTaskManager(FILE);
     }
 
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 
-    public static FileBackedTaskManager getFileBacked(File file) {
-        return new FileBackedTaskManager(file);
+    public static TaskManager getInMemoryManager() {
+        return new InMemoryTaskManager();
     }
 
 }

@@ -14,7 +14,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 class HttpTaskManagerTest {
-    protected final TaskManager manager = Managers.getDefault();
+    protected final TaskManager manager = Managers.getInMemoryManager();
     protected final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())

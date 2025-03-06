@@ -21,7 +21,7 @@ public class HttpTaskServer {
     }
 
     public static void main(String[] args) {
-        FileBackedTaskManager fileBackedTaskManager = Managers.getFileBacked(new File("/tasks.txt"));
+        FileBackedTaskManager fileBackedTaskManager = Managers.getDefault();
         HttpTaskServer taskServer = new HttpTaskServer(fileBackedTaskManager);
         taskServer.start();
     }
