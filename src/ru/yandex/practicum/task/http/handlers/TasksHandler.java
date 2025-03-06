@@ -1,13 +1,10 @@
 package ru.yandex.practicum.task.http.handlers;
 
-import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import ru.yandex.practicum.task.error.NotFoundException;
 import ru.yandex.practicum.task.error.TimeIntersectedException;
 import ru.yandex.practicum.task.interfaces.TaskManager;
 import ru.yandex.practicum.task.tasks.Task;
-
-import java.util.Optional;
 
 public class TasksHandler extends BaseHttpHandler {
 
@@ -32,12 +29,8 @@ public class TasksHandler extends BaseHttpHandler {
 
     @Override
     protected void handlePostItem(HttpExchange exchange) {
-        Optional<String> bodyStr = getBody(exchange);
-        try {
-            if (bodyStr.get().isBlank()) {
-                throw new JsonSyntaxException("Тело запроса не может быть пустым");
-            }
-            Task task = gson.fromJson(bodyStr.get(), Task.class);
+        handlePostItemByConsumer(exchange, bodyStr -> {
+            Task task = gson.fromJson(bodyStr, Task.class);
             try {
                 if (task.getId() == null) {
                     taskManager.createTask(task);
@@ -48,11 +41,7 @@ public class TasksHandler extends BaseHttpHandler {
             } catch (TimeIntersectedException e) {
                 sendHasInteractions(exchange, e.getMessage());
             }
-        } catch (NullPointerException | JsonSyntaxException e) {
-            sendBadRequest(exchange, "Неверное тело запроса");
-        } catch (Exception e) {
-            sendServerError(exchange);
-        }
+        });
     }
 
     @Override

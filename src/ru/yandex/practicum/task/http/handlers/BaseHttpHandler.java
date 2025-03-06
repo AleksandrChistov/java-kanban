@@ -2,6 +2,7 @@ package ru.yandex.practicum.task.http.handlers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.yandex.practicum.task.error.NotFoundException;
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class BaseHttpHandler implements HttpHandler {
     protected final TaskManager taskManager;
@@ -69,11 +71,11 @@ public abstract class BaseHttpHandler implements HttpHandler {
     }
 
     protected int getId(HttpExchange exchange) throws NotFoundException {
-        String[] pathParts = exchange.getRequestURI().getPath().split("/");
+        String idStr = exchange.getRequestURI().getPath().split("/")[2];
         try {
-            return Integer.parseInt(pathParts[2]);
+            return Integer.parseInt(idStr);
         } catch (NumberFormatException | NullPointerException exception) {
-            throw new NotFoundException(pathParts[2]);
+            throw new NotFoundException(idStr);
         }
     }
 
@@ -158,6 +160,20 @@ public abstract class BaseHttpHandler implements HttpHandler {
         }
 
         return Endpoint.UNKNOWN;
+    }
+
+    protected void handlePostItemByConsumer(HttpExchange exchange, Consumer<String> consumer) {
+        Optional<String> bodyStr = getBody(exchange);
+        try {
+            if (bodyStr.get().isBlank()) {
+                throw new JsonSyntaxException("Тело запроса не может быть пустым");
+            }
+            consumer.accept(bodyStr.get());
+        } catch (NullPointerException | JsonSyntaxException e) {
+            sendBadRequest(exchange, "Неверное тело запроса");
+        } catch (Exception e) {
+            sendServerError(exchange);
+        }
     }
 
 }

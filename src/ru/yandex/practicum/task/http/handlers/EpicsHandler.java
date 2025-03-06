@@ -1,12 +1,9 @@
 package ru.yandex.practicum.task.http.handlers;
 
-import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import ru.yandex.practicum.task.error.NotFoundException;
 import ru.yandex.practicum.task.interfaces.TaskManager;
 import ru.yandex.practicum.task.tasks.Epic;
-
-import java.util.Optional;
 
 public class EpicsHandler extends BaseHttpHandler {
 
@@ -31,23 +28,15 @@ public class EpicsHandler extends BaseHttpHandler {
 
     @Override
     protected void handlePostItem(HttpExchange exchange) {
-        Optional<String> bodyStr = getBody(exchange);
-        try {
-            if (bodyStr.get().isBlank()) {
-                throw new JsonSyntaxException("Тело запроса не может быть пустым");
-            }
-            Epic epic = gson.fromJson(bodyStr.get(), Epic.class);
+        handlePostItemByConsumer(exchange, bodyStr -> {
+            Epic epic = gson.fromJson(bodyStr, Epic.class);
             if (epic.getId() == null) {
                 taskManager.createEpic(epic);
             } else {
                 taskManager.updateEpic(epic);
             }
             sendSuccess(exchange);
-        } catch (NullPointerException | JsonSyntaxException e) {
-            sendBadRequest(exchange, "Неверное тело запроса");
-        } catch (Exception e) {
-            sendServerError(exchange);
-        }
+        });
     }
 
     @Override
