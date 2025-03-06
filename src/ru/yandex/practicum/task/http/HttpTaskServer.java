@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class HttpTaskServer {
+    private static final String API_ADDRESS = "localhost";
     private static final int PORT = 8080;
     private final TaskManager taskManager;
     private HttpServer httpServer;
@@ -27,7 +28,7 @@ public class HttpTaskServer {
 
     public void start() {
         try {
-            httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
+            httpServer = HttpServer.create(new InetSocketAddress(API_ADDRESS, PORT), 0);
 
             httpServer.createContext("/tasks", new TasksHandler(taskManager));
             httpServer.createContext("/subtasks", new SubtasksHandler(taskManager));
