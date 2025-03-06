@@ -1,30 +1,29 @@
-package ru.yandex.practicum.task.http.handles;
+package ru.yandex.practicum.task.http.handlers;
 
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import ru.yandex.practicum.task.error.NotFoundException;
-import ru.yandex.practicum.task.error.TimeIntersectedException;
 import ru.yandex.practicum.task.interfaces.TaskManager;
-import ru.yandex.practicum.task.tasks.Subtask;
+import ru.yandex.practicum.task.tasks.Epic;
 
 import java.util.Optional;
 
-public class SubtasksHandler extends BaseHttpHandler {
+public class EpicsHandler extends BaseHttpHandler {
 
-    public SubtasksHandler(TaskManager taskManager) {
-        super(taskManager, "subtasks");
+    public EpicsHandler(TaskManager taskManager) {
+        super(taskManager, "epics");
     }
 
     @Override
     protected void handleGetItems(HttpExchange exchange) {
-        sendResponse(exchange, taskManager.getAllSubtasks());
+        sendResponse(exchange, taskManager.getAllEpics());
     }
 
     @Override
     protected void handleGetItemById(HttpExchange exchange) {
         try {
-            Subtask subtask = taskManager.getSubtask(getId(exchange));
-            sendResponse(exchange, subtask);
+            Epic epic = taskManager.getEpic(getId(exchange));
+            sendResponse(exchange, epic);
         } catch (NotFoundException e) {
             sendNotFound(exchange, e.getMessage());
         }
@@ -37,17 +36,13 @@ public class SubtasksHandler extends BaseHttpHandler {
             if (bodyStr.get().isBlank()) {
                 throw new JsonSyntaxException("Тело запроса не может быть пустым");
             }
-            Subtask subtask = gson.fromJson(bodyStr.get(), Subtask.class);
-            try {
-                if (subtask.getId() == null) {
-                    taskManager.createSubtask(subtask);
-                } else {
-                    taskManager.updateSubtask(subtask);
-                }
-                sendSuccess(exchange);
-            } catch (TimeIntersectedException e) {
-                sendHasInteractions(exchange, e.getMessage());
+            Epic epic = gson.fromJson(bodyStr.get(), Epic.class);
+            if (epic.getId() == null) {
+                taskManager.createEpic(epic);
+            } else {
+                taskManager.updateEpic(epic);
             }
+            sendSuccess(exchange);
         } catch (NullPointerException | JsonSyntaxException e) {
             sendBadRequest(exchange, "Неверное тело запроса");
         } catch (Exception e) {
@@ -56,10 +51,20 @@ public class SubtasksHandler extends BaseHttpHandler {
     }
 
     @Override
+    protected void handleGetChildrenItemsById(HttpExchange exchange) {
+        try {
+            Epic epic = taskManager.getEpic(getId(exchange));
+            sendResponse(exchange, taskManager.getSubtasksByEpic(epic));
+        } catch (NotFoundException e) {
+            sendNotFound(exchange, e.getMessage());
+        }
+    }
+
+    @Override
     protected void handleDeleteItem(HttpExchange exchange) {
         try {
             int id = getId(exchange);
-            taskManager.deleteSubtask(id);
+            taskManager.deleteEpic(id);
             sendSuccess(exchange);
         } catch (NotFoundException e) {
             sendNotFound(exchange, e.getMessage());

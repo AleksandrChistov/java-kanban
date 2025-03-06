@@ -1,4 +1,4 @@
-package ru.yandex.practicum.task.http.handles;
+package ru.yandex.practicum.task.http.handlers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

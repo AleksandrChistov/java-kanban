@@ -25,7 +25,6 @@ class TaskManagerUtilTest {
                 "Test prioritized task 2", "Test prioritized task description 2", TaskStatus.IN_PROGRESS,
                 LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 30), 0);
         task2.setId(2);
-        Epic epic = new Epic("Test prioritized epic 1", "Test prioritized epic description 1", TaskStatus.NEW);
         Subtask subtaskIntersected = new Subtask(
                 "Test prioritized subtask 1", "Test prioritized subtask description 1", TaskStatus.NEW, 1,
                 LocalDateTime.of(2025, Month.FEBRUARY, 16, 22, 15), 5);

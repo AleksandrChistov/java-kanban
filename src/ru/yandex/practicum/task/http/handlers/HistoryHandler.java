@@ -1,4 +1,4 @@
-package ru.yandex.practicum.task.http.handles;
+package ru.yandex.practicum.task.http.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import ru.yandex.practicum.task.interfaces.TaskManager;
