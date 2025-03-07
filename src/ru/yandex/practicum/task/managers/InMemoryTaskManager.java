@@ -1,5 +1,7 @@
 package ru.yandex.practicum.task.managers;
 
+import ru.yandex.practicum.task.error.NotFoundException;
+import ru.yandex.practicum.task.error.TimeIntersectedException;
 import ru.yandex.practicum.task.interfaces.HistoryManager;
 import ru.yandex.practicum.task.interfaces.TaskManager;
 import ru.yandex.practicum.task.tasks.Epic;
@@ -21,7 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task createTask(Task task) {
         if (isTimeIntersected(task)) {
-            return null;
+            throw new TimeIntersectedException(task.getId());
         }
 
         task.setId(++lastTaskId);
@@ -46,7 +48,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask createSubtask(Subtask subtask) {
         if (isTimeIntersected(subtask)) {
-            return null;
+            throw new TimeIntersectedException(subtask.getId());
         }
 
         subtask.setId(++lastTaskId);
@@ -67,7 +69,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task updateTask(Task task) {
         if (isTimeIntersected(task)) {
-            return null;
+            throw new TimeIntersectedException(task.getId());
         }
         updateOrRemovePrioritizedTask(task);
 
@@ -100,7 +102,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask updateSubtask(Subtask subtask) {
         if (isTimeIntersected(subtask)) {
-            return null;
+            throw new TimeIntersectedException(subtask.getId());
         }
         Subtask updatedSubtask = null;
         Epic epic = epicsMap.get(subtask.getEpicId());
@@ -134,27 +136,30 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(int id) {
         Task task = tasksMap.get(id);
-        if (task != null) {
-            historyManager.add(task);
+        if (task == null) {
+            throw new NotFoundException(String.valueOf(id));
         }
+        historyManager.add(task);
         return task;
     }
 
     @Override
     public Epic getEpic(int id) {
         Epic epic = epicsMap.get(id);
-        if (epic != null) {
-            historyManager.add(epic);
+        if (epic == null) {
+            throw new NotFoundException(String.valueOf(id));
         }
+        historyManager.add(epic);
         return epic;
     }
 
     @Override
     public Subtask getSubtask(int id) {
         Subtask subtask = subtasksMap.get(id);
-        if (subtask != null) {
-            historyManager.add(subtask);
+        if (subtask == null) {
+            throw new NotFoundException(String.valueOf(id));
         }
+        historyManager.add(subtask);
         return subtask;
     }
 
@@ -180,12 +185,19 @@ public class InMemoryTaskManager implements TaskManager {
     public Task deleteTask(int id) {
         prioritizedTasks.removeIf(t -> t.getId() == id);
         historyManager.remove(id);
-        return tasksMap.remove(id);
+        Task removed = tasksMap.remove(id);
+
+        if (removed == null) {
+            throw new NotFoundException(String.valueOf(id));
+        }
+
+        return removed;
     }
 
     @Override
     public Epic deleteEpic(int id) {
         Epic removedEpic = epicsMap.remove(id);
+
         if (removedEpic != null) {
             historyManager.remove(id);
             for (Integer subtaskId : removedEpic.getSubtaskIds()) {
@@ -193,13 +205,17 @@ public class InMemoryTaskManager implements TaskManager {
                 historyManager.remove(subtaskId);
                 subtasksMap.remove(subtaskId);
             }
+        } else {
+            throw new NotFoundException(String.valueOf(id));
         }
+
         return removedEpic;
     }
 
     @Override
     public Subtask deleteSubtask(int id) {
         Subtask removedSubtask = subtasksMap.remove(id);
+
         if (removedSubtask != null) {
             prioritizedTasks.removeIf(t -> t.getId() == id);
             historyManager.remove(id);
@@ -211,7 +227,10 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 epic.calculateState(getSubtasksByEpic(epic));
             }
+        } else {
+            throw new NotFoundException(String.valueOf(id));
         }
+
         return removedSubtask;
     }
 
@@ -225,7 +244,8 @@ public class InMemoryTaskManager implements TaskManager {
         return prioritizedTasks;
     }
 
-    protected List<Subtask> getSubtasksByEpic(Epic epic) {
+    @Override
+    public List<Subtask> getSubtasksByEpic(Epic epic) {
         return epic.getSubtaskIds().stream()
                 .map(subtasksMap::get)
                 .collect(Collectors.toList());

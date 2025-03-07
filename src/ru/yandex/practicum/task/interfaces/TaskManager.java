@@ -38,6 +38,8 @@ public interface TaskManager {
 
     void deleteAllSubtasks();
 
+    List<Subtask> getSubtasksByEpic(Epic epic);
+
     Task deleteTask(int id);
 
     Epic deleteEpic(int id);
